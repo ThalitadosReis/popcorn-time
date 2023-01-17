@@ -1,0 +1,9 @@
+.Header {
+    background-color: rgb(179, 204, 216);
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.Header h1 {
+    color: rgb(0, 107, 161);
+}
