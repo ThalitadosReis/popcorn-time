@@ -1,10 +1,14 @@
 import "./Header.css"
 
-export default function Header() {
+export default function Header(props) {
 
     return (
       <div className="Header">
-        <h1>Header</h1>
+        
+        {props.titleMessage}
+
+        <button onClick={props.sortByRatingAsc}>Rating Asc</button>
+        <button onClick={props.sortByRatingDesc}>Rating Desc</button>
       </div>
     );
 }
