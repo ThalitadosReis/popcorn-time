@@ -4,14 +4,18 @@ import moviesFromJson from './data/movies.json'
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Main from './components/Main';
+import AddMovie from './components/AddMovie';
 
 import './App.css';
 
 function App() {
   const [moviesArr, setMoviesArr] = useState(moviesFromJson);
-  const [title, setTitle] = useState("")
-  const [rating, setRating] = useState(0)
-  const [imgURL, setImgURL] = useState("")
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const moviesToDisplay = moviesArr.filter( (movie) => {
+    return movie.title.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   // deleting a movie
   const deleteMovie = (title) => {
@@ -21,28 +25,16 @@ function App() {
     setMoviesArr(updatedMoviesArr);
   };
 
-  // creating a new movie
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const newMovie = {
-      "title": title,
-      "rating": rating,
-      "imgURL": imgURL
-    };
-
+  const createMovie = (newMovieObj) => {
     //update list of movies
     setMoviesArr( (prevListOfMovies) => {
-      const newList = [newMovie, ...prevListOfMovies];
+      const newList = [newMovieObj, ...prevListOfMovies];
       return newList;
     });
-
-    //clear form
-    setTitle(""); setRating(0); setImgURL("");
   }
 
   let titleMessage = moviesArr.length > 0 
-    ? <h1>Current number of movies: {moviesArr.length}</h1> 
+    ? <h1>Current number of movies: {moviesToDisplay.length}</h1> 
     : <h1>There are no more movies to be displayed</h1>
     
   // sorting by rating
@@ -54,38 +46,23 @@ function App() {
 
       <Header titleMessage={titleMessage} sortByRatingAsc={sortByRatingAsc} sortByRatingDesc={sortByRatingDesc} />
 
-      {/* form */}
-      <form onSubmit={handleSubmit}>
-        <label>Title: 
-          <input 
-            required={true}
-            type="text" 
-            name="title" 
-            placeholder="enter the title" 
-            value={title} 
-            onChange={(e) => { setTitle(e.target.value) }} />
+      <AddMovie createCallback={createMovie} />
+      <hr />
+      <form>
+        <label>
+            Search by Title:
+            <input 
+              type="text" 
+              name="searchQuery" 
+              placeholder="search by title" 
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value) }} 
+              />
         </label>
-
-        <label>Rating: 
-          <input 
-              type="number" min={0} max={10}
-              name="rating" 
-              value={rating}
-              onChange={(e) => { setRating(e.target.value) }} />
-        </label>
-
-        <label>Image URL:
-          <input
-            type="url"
-            name="imgURL"
-            value={imgURL}
-            onChange={(e) => { setImgURL(e.target.value) }} />
-         </label>
-
-        <button>Create</button>
       </form>
 
-      <Main moviesArr={moviesArr} deleteCallback={deleteMovie} />
+
+      <Main moviesArr={moviesToDisplay} deleteCallback={deleteMovie} />
 
       <Footer />
 
